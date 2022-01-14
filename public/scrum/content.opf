@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+  <metadata xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <dc:contributor opf:role="bkp">calibre (2.63.0) [https://calibre-ebook.com]</dc:contributor>
+    <dc:title>SCRUM</dc:title>
+    <meta name="calibre:title_sort" content="SCRUM"/>
+    <dc:publisher>天下文化</dc:publisher>
+    <dc:identifier id="uuid_id" opf:scheme="uuid">774bab9b-7e57-4406-94e1-d5d4c94ae3c6</dc:identifier>
+    <dc:identifier opf:scheme="calibre">774bab9b-7e57-4406-94e1-d5d4c94ae3c6</dc:identifier>
+    <dc:date>2014-04-28T16:00:00+00:00</dc:date>
+    <dc:subject>專案管理</dc:subject>
+    <dc:subject>軟體研發</dc:subject>
+    <dc:subject>電腦程式設計</dc:subject>
+    <meta name="calibre:timestamp" content="2016-08-14T16:56:43.622000+00:00"/>
+    <meta name="cover" content="cover"/>
+    <dc:language>zh</dc:language>
+    <dc:creator opf:file-as="傑夫．薩瑟蘭" opf:role="aut">傑夫．薩瑟蘭</dc:creator>
+  </metadata>
+  <manifest>
+    <item href="cover.jpeg" id="cover" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/back.png" id="back.png" media-type="image/png"/>
+    <item href="OEBPS/Images/p014.jpg" id="p014.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p132.jpg" id="p132.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p134.jpg" id="p134.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p136.jpg" id="p136.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p150.jpg" id="p150.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p172.jpg" id="p172.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p178.jpg" id="p178.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p186.png" id="p186.png" media-type="image/png"/>
+    <item href="OEBPS/Images/p218.jpg" id="p218.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p222.jpg" id="p222.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p245.jpg" id="p245.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p262.jpg" id="p262.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p270.jpg" id="p270.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p271.jpg" id="p271.jpg" media-type="image/jpeg"/>
+    <item href="OEBPS/Images/p290.png" id="p290.png" media-type="image/png"/>
+    <item href="OEBPS/Text/Acknowledgment.xhtml" id="Acknowledgment.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Appendix.xhtml" id="Appendix.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch1.xhtml" id="Ch1.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch2.xhtml" id="Ch2.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch3.xhtml" id="Ch3.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch4.xhtml" id="Ch4.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch5.xhtml" id="Ch5.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch6.xhtml" id="Ch6.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch7.xhtml" id="Ch7.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch8.xhtml" id="Ch8.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Ch9.xhtml" id="Ch9.xhtml" media-type="application/xhtml+xml"/>
+    <item href="OEBPS/Text/Foreword.xhtml" id="Foreword.xhtml" media-type="application/xhtml+xml"/>
+    <item href="page_styles.css" id="page_css" media-type="text/css"/>
+    <item href="stylesheet.css" id="css" media-type="text/css"/>
+    <item href="titlepage.xhtml" id="titlepage" media-type="application/xhtml+xml"/>
+    <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="titlepage"/>
+    <itemref idref="Foreword.xhtml"/>
+    <itemref idref="Ch1.xhtml"/>
+    <itemref idref="Ch2.xhtml"/>
+    <itemref idref="Ch3.xhtml"/>
+    <itemref idref="Ch4.xhtml"/>
+    <itemref idref="Ch5.xhtml"/>
+    <itemref idref="Ch6.xhtml"/>
+    <itemref idref="Ch7.xhtml"/>
+    <itemref idref="Ch8.xhtml"/>
+    <itemref idref="Ch9.xhtml"/>
+    <itemref idref="Acknowledgment.xhtml"/>
+    <itemref idref="Appendix.xhtml"/>
+  </spine>
+  <guide>
+    <reference href="titlepage.xhtml" title="Cover" type="cover"/>
+  </guide>
+</package>
