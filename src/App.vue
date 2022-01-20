@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import eReader from "./components/eReader.vue";
-import ReaderEpub from "./components/ReaderEpub.vue";
+// import eReader from './components/eReader.vue';
+import ReaderEpub from './components/ReaderEpub.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     // eReader,
     ReaderEpub,

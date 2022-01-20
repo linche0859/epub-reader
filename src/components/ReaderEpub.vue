@@ -1,12 +1,8 @@
 <template>
   <div>
     <div id="viewer" class="scrolled" style="height: 100vh" />
-    <button id="prev" class="arrow prev" @click="clickPreviousPageHandler">
-      ‹
-    </button>
-    <button id="next" class="arrow next" @click="clickNextPageHandler">
-      ›
-    </button>
+    <button id="prev" class="arrow prev" @click="clickPreviousPageHandler">‹</button>
+    <button id="next" class="arrow next" @click="clickNextPageHandler">›</button>
     <div id="select-menu" ref="notePoptip" class="select-menu">
       <ul class="highlight-list">
         <li
@@ -29,15 +25,15 @@
 
 <script>
 // import "../../static/epub.min.js";
-import ePub from "epubjs";
-import generateEpub from "epub-gen-memory";
-import QiuPen from "../../util/highlight";
-import storage from "../../util/storage";
+import ePub from 'epubjs';
+import generateEpub from 'epub-gen-memory';
+import QiuPen from '../../util/highlight';
+import storage from '../../util/storage';
 
-const readLocalFile = file => {
-  return new Promise(resolve => {
+const readLocalFile = (file) => {
+  return new Promise((resolve) => {
     const rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
+    rawFile.open('GET', file, false);
     rawFile.onreadystatechange = function () {
       if (rawFile.readyState === 4) {
         if (rawFile.status === 200 || rawFile.status == 0) {
@@ -49,15 +45,15 @@ const readLocalFile = file => {
   });
 };
 
-import { bookContent } from "../../book";
+import { bookContent } from '../../book';
 
 export default {
   data() {
     return {
       selected: false,
       bookId: 1,
-      selectedText: "",
-      locationCfi: "",
+      selectedText: '',
+      locationCfi: '',
       notes: [],
       book: null,
       rendition: null,
@@ -65,62 +61,62 @@ export default {
       // bookMeta: null,
       // bookToc: null,
       options: {
-        bgColor: "#fff",
+        bgColor: '#fff',
         fontSize: 16,
-        fontFamily: "Microsoft Yahei, Heiti SC, Heiti TC",
+        fontFamily: 'Microsoft Yahei, Heiti SC, Heiti TC',
         lineHeight: 2,
         theme: 0,
       },
       themes: [
         {
-          id: "1",
-          name: "白色",
-          color: "#000",
-          bgColor: "#fff",
+          id: '1',
+          name: '白色',
+          color: '#000',
+          bgColor: '#fff',
         },
         {
-          id: "2",
-          name: "浅棕色",
-          color: "#000",
-          bgColor: "#f9f4e9",
+          id: '2',
+          name: '浅棕色',
+          color: '#000',
+          bgColor: '#f9f4e9',
         },
         {
-          id: "3",
-          name: "护眼",
-          color: "#000",
-          bgColor: "#ceeaba",
+          id: '3',
+          name: '护眼',
+          color: '#000',
+          bgColor: '#ceeaba',
         },
         {
-          id: "4",
-          name: "夜间",
-          color: "#fff",
-          bgColor: "#000",
+          id: '4',
+          name: '夜间',
+          color: '#fff',
+          bgColor: '#000',
         },
       ],
       highlights: [
         {
-          name: "red",
-          color: "#FFBA84",
+          name: 'red',
+          color: '#FFBA84',
         },
         {
-          name: "orange",
-          color: "#E2943B",
+          name: 'orange',
+          color: '#E2943B',
         },
         {
-          name: "yellow",
-          color: "#F7C242",
+          name: 'yellow',
+          color: '#F7C242',
         },
         {
-          name: "green",
-          color: "#86C166",
+          name: 'green',
+          color: '#86C166',
         },
         {
-          name: "blue",
-          color: "#33A6B8",
+          name: 'blue',
+          color: '#33A6B8',
         },
         {
-          name: "purple",
-          color: "#8A6BBE",
+          name: 'purple',
+          color: '#8A6BBE',
         },
       ],
       wheelTimer: null,
@@ -136,30 +132,30 @@ export default {
     async init() {
       const options = {
         title: "Alice's Adventures in Wonderland", // *Required, title of the book.
-        author: "Lewis Carroll", // *Required, name of the author.
-        publisher: "Macmillan & Co.", // optional
-        cover: "logo.png", // Url or File path, both ok.
+        author: 'Lewis Carroll', // *Required, name of the author.
+        publisher: 'Macmillan & Co.', // optional
+        cover: 'logo.png', // Url or File path, both ok.
       };
 
       const content = [
         {
-          title: "Acknowledgment.xhtml",
+          title: 'Acknowledgment.xhtml',
           content: bookContent,
         },
         {
-          title: "Appendix.xhtml",
+          title: 'Appendix.xhtml',
           content: bookContent,
         },
         {
-          title: "Ch1.xhtml",
+          title: 'Ch1.xhtml',
           content: bookContent,
         },
         {
-          title: "Ch2.xhtml",
+          title: 'Ch2.xhtml',
           content: bookContent,
         },
         {
-          title: "Ch3.xhtml",
+          title: 'Ch3.xhtml',
           content: bookContent,
         },
       ];
@@ -171,7 +167,7 @@ export default {
       //   "https://s3.amazonaws.com/epubjs/books/moby-dick/OPS/package.opf"
       // );
 
-      this.rendition = this.book.renderTo("viewer", { height: "100%" });
+      this.rendition = this.book.renderTo('viewer', { height: '100%' });
       this.rendition.display();
 
       // 前往某一個章節
@@ -179,7 +175,7 @@ export default {
       // this.rendition.display("epubcfi(/6/8!/4/110/1:193)");
 
       this.book.ready.then(() => {
-        console.log("book.ready");
+        console.log('book.ready');
         QiuPen.init();
       });
 
@@ -201,25 +197,25 @@ export default {
         // console.log(toc);
       });
 
-      const next = document.getElementById("next");
+      const next = document.getElementById('next');
       next.addEventListener(
-        "click",
+        'click',
         () => {
           this.rendition.next();
         },
-        false
+        false,
       );
 
-      const prev = document.getElementById("prev");
+      const prev = document.getElementById('prev');
       prev.addEventListener(
-        "click",
+        'click',
         () => {
           this.rendition.prev();
         },
-        false
+        false,
       );
 
-      const keyListener = e => {
+      const keyListener = (e) => {
         // Left Key
         if ((e.keyCode || e.which) == 37) {
           this.rendition.prev();
@@ -231,32 +227,26 @@ export default {
         }
       };
 
-      this.rendition.on("keyup", keyListener);
-      document.addEventListener("keyup", keyListener, false);
+      this.rendition.on('keyup', keyListener);
+      document.addEventListener('keyup', keyListener, false);
 
       // 切換頁時，當到達第一頁時，隱藏上一頁按鈕，到達最後一頁時，隱藏下一頁按鈕
-      this.rendition.on("relocated", location => {
+      this.rendition.on('relocated', (location) => {
         console.log(location);
 
-        var next =
-          this.book.package.metadata.direction === "rtl"
-            ? document.getElementById("prev")
-            : document.getElementById("next");
-        var prev =
-          this.book.package.metadata.direction === "rtl"
-            ? document.getElementById("next")
-            : document.getElementById("prev");
+        var next = this.book.package.metadata.direction === 'rtl' ? document.getElementById('prev') : document.getElementById('next');
+        var prev = this.book.package.metadata.direction === 'rtl' ? document.getElementById('next') : document.getElementById('prev');
 
         if (location.atEnd) {
-          next.style.visibility = "hidden";
+          next.style.visibility = 'hidden';
         } else {
-          next.style.visibility = "visible";
+          next.style.visibility = 'visible';
         }
 
         if (location.atStart) {
-          prev.style.visibility = "hidden";
+          prev.style.visibility = 'hidden';
         } else {
-          prev.style.visibility = "visible";
+          prev.style.visibility = 'visible';
         }
       });
       // # highlight 筆記區塊
@@ -266,23 +256,23 @@ export default {
       //     color: "#FFBA84",
       //   });
       // });
-      const highlight = document.getElementById("highlights");
+      const highlight = document.getElementById('highlights');
 
       // Apply a class to selected text
-      this.rendition.on("selected", (cfiRange, contents) => {
-        this.book.getRange(cfiRange).then(range => {
-          const a = document.createElement("a");
-          const remove = document.createElement("a");
+      this.rendition.on('selected', (cfiRange, contents) => {
+        this.book.getRange(cfiRange).then((range) => {
+          const a = document.createElement('a');
+          const remove = document.createElement('a');
           if (range) {
             const text = range.toString();
             const textNode = document.createTextNode(text);
             a.textContent = cfiRange;
-            a.href = "#" + cfiRange;
+            a.href = '#' + cfiRange;
             a.onclick = () => {
               this.rendition.display(cfiRange);
             };
-            remove.textContent = "remove";
-            remove.href = "#" + cfiRange;
+            remove.textContent = 'remove';
+            remove.href = '#' + cfiRange;
             remove.onclick = () => {
               this.rendition.annotations.remove(cfiRange);
               return false;
@@ -291,8 +281,8 @@ export default {
         });
 
         // 選取範圍上色
-        this.rendition.annotations.highlight(cfiRange, {}, e => {
-          console.log("highlight clicked", e.target);
+        this.rendition.annotations.highlight(cfiRange, {}, (e) => {
+          console.log('highlight clicked', e.target);
         });
 
         // 在最右側顯示筆記 icon
@@ -308,20 +298,20 @@ export default {
       });
 
       this.rendition.themes.default({
-        "::selection": {
-          background: "rgba(255,255,0, 0.3)",
+        '::selection': {
+          background: 'rgba(255,255,0, 0.3)',
         },
-        ".epubjs-hl": {
-          fill: "yellow",
-          "fill-opacity": "0.3",
-          "mix-blend-mode": "multiply",
-          cursor: "pointer",
-          "pointer-events": "auto",
+        '.epubjs-hl': {
+          fill: 'yellow',
+          'fill-opacity': '0.3',
+          'mix-blend-mode': 'multiply',
+          cursor: 'pointer',
+          'pointer-events': 'auto',
         },
       });
 
       // Illustration of how to get text from a saved cfiRange
-      const highlights = document.getElementById("highlights");
+      const highlights = document.getElementById('highlights');
 
       // this.rendition.on("selected", function (cfiRange) {
 
@@ -334,19 +324,19 @@ export default {
       if (!this.book) {
         return;
       }
-      this.book.setStyle("font-size", options.fontSize + "px");
-      this.book.setStyle("background-color", options.bgColor);
-      this.book.setStyle("font-family", options.fontFamily);
-      this.book.setStyle("line-height", 3);
+      this.book.setStyle('font-size', options.fontSize + 'px');
+      this.book.setStyle('background-color', options.bgColor);
+      this.book.setStyle('font-family', options.fontFamily);
+      this.book.setStyle('line-height', 3);
       this.book.renderer.forceSingle(false);
-      this.book.setStyle("color", themes[options.theme].color);
-      this.book.setStyle("background-color", themes[options.theme].bgColor);
+      this.book.setStyle('color', themes[options.theme].color);
+      this.book.setStyle('background-color', themes[options.theme].bgColor);
     },
     /**
      * 載入筆記
      */
     loadNote() {
-      const store = storage.get("highlight", {});
+      const store = storage.get('highlight', {});
       this.notes = store[this.bookId] || [];
     },
     /**
@@ -367,20 +357,12 @@ export default {
      */
     clickMarkHandler(name) {
       // 必需和 highlight.js 中的 classes 相同
-      const highlight = this.highlights.find(item => item.name === name);
+      const highlight = this.highlights.find((item) => item.name === name);
       const highlightName = `hl-${name}`;
-      const { id: noteId } =
-        QiuPen.highlighter.highlightSelection(highlightName)[0];
-      QiuPen.save(
-        this.book,
-        this.bookId,
-        this.selectedText,
-        this.locationCfi,
-        highlight.color,
-        noteId
-      );
+      const { id: noteId } = QiuPen.highlighter.highlightSelection(highlightName)[0];
+      QiuPen.save(this.book, this.bookId, this.selectedText, this.locationCfi, highlight.color, noteId);
       this.loadNote();
-      this.$refs.notePoptip.style.display = "none";
+      this.$refs.notePoptip.style.display = 'none';
     },
     /**
      * 刪除筆記標記事件
@@ -390,7 +372,7 @@ export default {
       const { id: noteId } = unhighlightSelection;
       QiuPen.deleteNote({ bookKey: bookId, noteId, book: this.book });
       this.loadNote();
-      this.$refs.notePoptip.style.display = "none";
+      this.$refs.notePoptip.style.display = 'none';
     },
   },
 };
@@ -428,8 +410,8 @@ export default {
   margin-top: 50px;
 }
 
-[ref="epubjs-mk"] {
-  background: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPScxLjEnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZycgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnIHg9JzBweCcgeT0nMHB4JyB2aWV3Qm94PScwIDAgNzUgNzUnPjxnIGZpbGw9JyNCREJEQkQnIGlkPSdidWJibGUnPjxwYXRoIGNsYXNzPSdzdDAnIGQ9J00zNy41LDkuNEMxOS42LDkuNCw1LDIwLjUsNSwzNC4zYzAsNS45LDIuNywxMS4zLDcuMSwxNS42TDkuNiw2NS42bDE5LTcuM2MyLjgsMC42LDUuOCwwLjksOC45LDAuOSBDNTUuNSw1OS4yLDcwLDQ4LjEsNzAsMzQuM0M3MCwyMC41LDU1LjQsOS40LDM3LjUsOS40eicvPjwvZz48L3N2Zz4=")
+[ref='epubjs-mk'] {
+  background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPScxLjEnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZycgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnIHg9JzBweCcgeT0nMHB4JyB2aWV3Qm94PScwIDAgNzUgNzUnPjxnIGZpbGw9JyNCREJEQkQnIGlkPSdidWJibGUnPjxwYXRoIGNsYXNzPSdzdDAnIGQ9J00zNy41LDkuNEMxOS42LDkuNCw1LDIwLjUsNSwzNC4zYzAsNS45LDIuNywxMS4zLDcuMSwxNS42TDkuNiw2NS42bDE5LTcuM2MyLjgsMC42LDUuOCwwLjksOC45LDAuOSBDNTUuNSw1OS4yLDcwLDQ4LjEsNzAsMzQuM0M3MCwyMC41LDU1LjQsOS40LDM3LjUsOS40eicvPjwvZz48L3N2Zz4=')
     no-repeat;
   width: 20px;
   height: 20px;
@@ -437,7 +419,7 @@ export default {
   margin-left: 0;
 }
 
-[ref="epubjs-hl"] {
+[ref='epubjs-hl'] {
   cursor: pointer;
 }
 </style>
