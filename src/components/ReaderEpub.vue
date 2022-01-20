@@ -17,8 +17,12 @@
           @click="clickMarkHandler(item.name)"
         />
       </ul>
-      <div class="divider" />
-      <button id="remove-heightlight" class="menu-item">删除标记</button>
+
+      <div id="extras">
+        <ul id="highlights"></ul>
+      </div>
+      <!-- <div class="divider" />
+      <button id="remove-heightlight" class="menu-item">删除标记</button> -->
     </div>
   </div>
 </template>
@@ -30,8 +34,8 @@ import generateEpub from "epub-gen-memory";
 import QiuPen from "../../util/highlight";
 import storage from "../../util/storage";
 
-const readLocalFile = (file) => {
-  return new Promise((resolve) => {
+const readLocalFile = file => {
+  return new Promise(resolve => {
     const rawFile = new XMLHttpRequest();
     rawFile.open("GET", file, false);
     rawFile.onreadystatechange = function () {
@@ -44,6 +48,8 @@ const readLocalFile = (file) => {
     rawFile.send(null);
   });
 };
+
+import { bookContent } from "../../book";
 
 export default {
   data() {
@@ -138,28 +144,26 @@ export default {
       const content = [
         {
           title: "Acknowledgment.xhtml",
-          content: await readLocalFile(
-            "/scrum/OEBPS/Text/Acknowledgment.xhtml"
-          ),
+          content: bookContent,
         },
         {
           title: "Appendix.xhtml",
-          content: await readLocalFile("/scrum/OEBPS/Text/Appendix.xhtml"),
+          content: bookContent,
         },
         {
           title: "Ch1.xhtml",
-          content: await readLocalFile("/scrum/OEBPS/Text/Ch1.xhtml"),
+          content: bookContent,
         },
         {
           title: "Ch2.xhtml",
-          content: await readLocalFile("/scrum/OEBPS/Text/Ch2.xhtml"),
+          content: bookContent,
         },
         {
           title: "Ch3.xhtml",
-          content: await readLocalFile("/scrum/OEBPS/Text/Ch3.xhtml"),
+          content: bookContent,
         },
       ];
-      console.log(content);
+
       const epubContent = await generateEpub(options, content);
 
       this.book = ePub(epubContent);
@@ -168,11 +172,11 @@ export default {
       // );
 
       this.rendition = this.book.renderTo("viewer", { height: "100%" });
-      // this.rendition.display();
+      this.rendition.display();
 
       // 前往某一個章節
       // this.rendition.display("epubcfi(/6/8[Ch2.xhtml]!/4/2/2/1:0)");
-      this.rendition.display("epubcfi(/6/8!/4/110/1:193)");
+      // this.rendition.display("epubcfi(/6/8!/4/110/1:193)");
 
       this.book.ready.then(() => {
         console.log("book.ready");
@@ -192,117 +196,136 @@ export default {
     initBookEvent() {
       // 監聽章節的渲染
       // 切換章節後也會觸發
-      this.book.on("renderer:chapterDisplayed", () => {
-        // 创建动态脚本
-        const createScript = (url) => {
-          var script = document.createElement("script");
-          script.type = "text/javascript";
-          script.src = url;
-          return script;
-        };
-
-        // 创建动态样式表
-        const createLink = (url) => {
-          var link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.type = "text/css";
-          link.href = url;
-          return link;
-        };
-        const link = createLink("/static/common.css");
-        const script = createScript("/static/selection.js");
-        const iframe = document.getElementsByTagName("iframe")[0];
-        iframe.contentDocument.head.appendChild(link);
-        iframe.contentDocument.body.appendChild(script);
-
-        const isFloat = (n) => {
-          return Number(n) === n && n % 1 !== 0;
-        };
-
-        // 鍵盤控制上、下頁事件
-        iframe.contentDocument.addEventListener("keydown", (e) => {
-          switch (e.keyCode) {
-            case 37: // left
-            case 38: // up
-              this.rendition.prev();
-              break;
-            case 39: // right
-            case 40: // down
-              this.rendition.next();
-              break;
-          }
-        });
-
-        // 滑鼠滾輪控制上、下頁事件
-        // 還有些問題，需再查看
-        iframe.contentDocument.addEventListener("wheel", (e) => {
-          // console.log(e);
-          if (wheelTimer) clearTimeout(wheelTimer);
-          wheelTimer = setTimeout(() => {
-            e.preventDefault();
-            if (isFloat(e.deltaY)) return;
-            if (e.deltaY < 0) {
-              this.rendition.prev();
-            } else {
-              this.rendition.next();
-            }
-          }, 300);
-        });
-
-        QiuPen.create(iframe.contentWindow.document);
-        QiuPen.load(this.book, this.bookId);
+      // Navigation loaded
+      this.book.loaded.navigation.then(function (toc) {
+        // console.log(toc);
       });
 
-      this.book.on("book:pageChanged", function (location) {
-        console.log(
-          "book:pageChanged",
-          location.anchorPage,
-          location.pageRange
-        );
-      });
+      const next = document.getElementById("next");
+      next.addEventListener(
+        "click",
+        () => {
+          this.rendition.next();
+        },
+        false
+      );
 
-      // 切換章節事件
-      this.rendition.on("rendered", (section) => {
-        console.log("section:", section);
-      });
+      const prev = document.getElementById("prev");
+      prev.addEventListener(
+        "click",
+        () => {
+          this.rendition.prev();
+        },
+        false
+      );
 
-      // 切換頁事件
-      this.rendition.on("relocated", (location) => {
-        console.log("location:", location);
-      });
+      const keyListener = e => {
+        // Left Key
+        if ((e.keyCode || e.which) == 37) {
+          this.rendition.prev();
+        }
 
-      this.book.on("renderer:locationChanged", (location) => {
-        this.locationCfi = location;
-      });
+        // Right Key
+        if ((e.keyCode || e.which) == 39) {
+          this.rendition.next();
+        }
+      };
 
-      // 選取文字事件
-      this.book.on("renderer:mouseup", (event) => {
-        // 释放后检测用户选中的文字
-        var render = this.book.renderer.render;
-        var selectedContent = render.window.getSelection();
-        const selection = selectedContent;
-        console.log("selection", selection);
-        console.log(
-          "selection.anchorNode.data.substring：",
-          selection.anchorNode.data.substring(
-            selection.baseOffset,
-            selection.extentOffset
-          )
-        );
-        this.selectedText = selection.anchorNode.data.substring(
-          selection.baseOffset,
-          selection.extentOffset
-        );
-        console.log("selectedText", selectedText);
-        // 若当前用户不在选中状态，并且选中文字不为空
-        if (this.selected === false) {
-          console.log("啦啦1");
-          if (selectedContent.toString() && selectedContent.toString() !== "") {
-            console.log("啦啦2");
-            this.selected = true;
-          }
+      this.rendition.on("keyup", keyListener);
+      document.addEventListener("keyup", keyListener, false);
+
+      // 切換頁時，當到達第一頁時，隱藏上一頁按鈕，到達最後一頁時，隱藏下一頁按鈕
+      this.rendition.on("relocated", location => {
+        console.log(location);
+
+        var next =
+          this.book.package.metadata.direction === "rtl"
+            ? document.getElementById("prev")
+            : document.getElementById("next");
+        var prev =
+          this.book.package.metadata.direction === "rtl"
+            ? document.getElementById("next")
+            : document.getElementById("prev");
+
+        if (location.atEnd) {
+          next.style.visibility = "hidden";
+        } else {
+          next.style.visibility = "visible";
+        }
+
+        if (location.atStart) {
+          prev.style.visibility = "hidden";
+        } else {
+          prev.style.visibility = "visible";
         }
       });
+      // # highlight 筆記區塊
+      // ["epubcfi(/6/8!/4/110,/1:166,/1:286)"].forEach(cfi => {
+      //   this.rendition.annotations.highlight(cfi, {
+      //     type: "highlight",
+      //     color: "#FFBA84",
+      //   });
+      // });
+      const highlight = document.getElementById("highlights");
+
+      // Apply a class to selected text
+      this.rendition.on("selected", (cfiRange, contents) => {
+        this.book.getRange(cfiRange).then(range => {
+          const a = document.createElement("a");
+          const remove = document.createElement("a");
+          if (range) {
+            const text = range.toString();
+            const textNode = document.createTextNode(text);
+            a.textContent = cfiRange;
+            a.href = "#" + cfiRange;
+            a.onclick = () => {
+              this.rendition.display(cfiRange);
+            };
+            remove.textContent = "remove";
+            remove.href = "#" + cfiRange;
+            remove.onclick = () => {
+              this.rendition.annotations.remove(cfiRange);
+              return false;
+            };
+          }
+        });
+
+        // 選取範圍上色
+        this.rendition.annotations.highlight(cfiRange, {}, e => {
+          console.log("highlight clicked", e.target);
+        });
+
+        // 在最右側顯示筆記 icon
+        // this.rendition.annotations.mark(cfiRange, { something: false }, e => {
+        // const bounds = e.target.getBoundingClientRect();
+        // const clientX = e.clientX;
+        // if (clientX > bounds.right) {
+        //   console.log("mark clicked", e.target);
+        // }
+        // });
+
+        contents.window.getSelection().removeAllRanges();
+      });
+
+      this.rendition.themes.default({
+        "::selection": {
+          background: "rgba(255,255,0, 0.3)",
+        },
+        ".epubjs-hl": {
+          fill: "yellow",
+          "fill-opacity": "0.3",
+          "mix-blend-mode": "multiply",
+          cursor: "pointer",
+          "pointer-events": "auto",
+        },
+      });
+
+      // Illustration of how to get text from a saved cfiRange
+      const highlights = document.getElementById("highlights");
+
+      // this.rendition.on("selected", function (cfiRange) {
+
+      // });
     },
     /**
      * 設置電子書樣式
@@ -344,7 +367,7 @@ export default {
      */
     clickMarkHandler(name) {
       // 必需和 highlight.js 中的 classes 相同
-      const highlight = this.highlights.find((item) => item.name === name);
+      const highlight = this.highlights.find(item => item.name === name);
       const highlightName = `hl-${name}`;
       const { id: noteId } =
         QiuPen.highlighter.highlightSelection(highlightName)[0];
@@ -372,6 +395,52 @@ export default {
   },
 };
 </script>
+
+<style type="text/css">
+::selection {
+  background: yellow;
+}
+
+#extras {
+  width: 600px;
+  margin: 40px auto;
+}
+
+#highlights {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+#highlights li {
+  list-style: none;
+  margin-bottom: 20px;
+  border-top: 1px solid #e2e2e2;
+  padding: 10px;
+}
+
+#highlights a {
+  display: block;
+}
+
+#viewer.spreads {
+  top: 0;
+  margin-top: 50px;
+}
+
+[ref="epubjs-mk"] {
+  background: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPScxLjEnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZycgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnIHg9JzBweCcgeT0nMHB4JyB2aWV3Qm94PScwIDAgNzUgNzUnPjxnIGZpbGw9JyNCREJEQkQnIGlkPSdidWJibGUnPjxwYXRoIGNsYXNzPSdzdDAnIGQ9J00zNy41LDkuNEMxOS42LDkuNCw1LDIwLjUsNSwzNC4zYzAsNS45LDIuNywxMS4zLDcuMSwxNS42TDkuNiw2NS42bDE5LTcuM2MyLjgsMC42LDUuOCwwLjksOC45LDAuOSBDNTUuNSw1OS4yLDcwLDQ4LjEsNzAsMzQuM0M3MCwyMC41LDU1LjQsOS40LDM3LjUsOS40eicvPjwvZz48L3N2Zz4=")
+    no-repeat;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: 0;
+}
+
+[ref="epubjs-hl"] {
+  cursor: pointer;
+}
+</style>
 
 <style scoped>
 .arrow {
