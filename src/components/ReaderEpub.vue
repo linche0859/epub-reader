@@ -3,7 +3,7 @@
     <div id="viewer" class="scrolled" style="height: 100vh" />
     <button id="prev" class="arrow prev" @click="clickPreviousPageHandler">‹</button>
     <button id="next" class="arrow next" @click="clickNextPageHandler">›</button>
-    <div id="select-menu" ref="notePoptip" class="select-menu">
+    <div v-show="selected" id="select-menu" ref="notePoptip" class="select-menu">
       <ul class="highlight-list">
         <li
           v-for="item in highlights"
@@ -13,21 +13,16 @@
           @click="clickMarkHandler(item.name)"
         />
       </ul>
-
-      <div id="extras">
-        <ul id="highlights"></ul>
-      </div>
-      <!-- <div class="divider" />
-      <button id="remove-heightlight" class="menu-item">删除标记</button> -->
+      <hr />
+      <button id="remove-heightlight" class="menu-item" @click="deleteMarkHandler">删除标记</button>
     </div>
   </div>
 </template>
 
 <script>
-// import "../../static/epub.min.js";
 import ePub from 'epubjs';
 import generateEpub from 'epub-gen-memory';
-import QiuPen from '../../util/highlight';
+import QiuPen, { highlightElementClass } from '../../util/highlight';
 import storage from '../../util/storage';
 
 const readLocalFile = (file) => {
@@ -175,7 +170,7 @@ export default {
       // this.rendition.display("epubcfi(/6/8!/4/110/1:193)");
 
       this.book.ready.then(() => {
-        console.log('book.ready');
+        // console.log('book.ready');
         QiuPen.init();
       });
 
@@ -231,8 +226,19 @@ export default {
       document.addEventListener('keyup', keyListener, false);
 
       // 切換頁時，當到達第一頁時，隱藏上一頁按鈕，到達最後一頁時，隱藏下一頁按鈕
-      this.rendition.on('relocated', (location) => {
-        console.log(location);
+      this.rendition.on('relocated', (location, e) => {
+        const createLink = (url) => {
+          var link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = url;
+          return link;
+        };
+        const link = createLink('/common.css');
+        var iframe = document.getElementsByTagName('iframe')[0];
+        iframe.contentDocument.head.appendChild(link);
+        QiuPen.create(iframe.contentWindow.document);
+        QiuPen.load(this.book, this.bookId);
 
         var next = this.book.package.metadata.direction === 'rtl' ? document.getElementById('prev') : document.getElementById('next');
         var prev = this.book.package.metadata.direction === 'rtl' ? document.getElementById('next') : document.getElementById('prev');
@@ -256,45 +262,33 @@ export default {
       //     color: "#FFBA84",
       //   });
       // });
-      const highlight = document.getElementById('highlights');
+
+      this.rendition.on('click', (e) => {
+        // 先讓畫面更新再做判斷
+        setTimeout(() => {
+          // 有包含 highlight 的元素，則顯示筆記彈窗
+          if ([...e.target.classList].some((item) => highlightElementClass.includes(item))) {
+            this.selected = true;
+            return;
+          }
+          // iframe 中是否有已被選取得文字，有則顯示筆記彈窗
+          const selectedContent = QiuPen.highlighter.doc.getSelection() || {};
+          if (selectedContent.anchorNode && selectedContent.anchorNode.data.substring(selectedContent.baseOffset, selectedContent.extentOffset)) {
+            this.selected = true;
+            return;
+          }
+          this.selected = false;
+        });
+      });
 
       // Apply a class to selected text
       this.rendition.on('selected', (cfiRange, contents) => {
-        this.book.getRange(cfiRange).then((range) => {
-          const a = document.createElement('a');
-          const remove = document.createElement('a');
-          if (range) {
-            const text = range.toString();
-            const textNode = document.createTextNode(text);
-            a.textContent = cfiRange;
-            a.href = '#' + cfiRange;
-            a.onclick = () => {
-              this.rendition.display(cfiRange);
-            };
-            remove.textContent = 'remove';
-            remove.href = '#' + cfiRange;
-            remove.onclick = () => {
-              this.rendition.annotations.remove(cfiRange);
-              return false;
-            };
-          }
-        });
-
-        // 選取範圍上色
-        this.rendition.annotations.highlight(cfiRange, {}, (e) => {
-          console.log('highlight clicked', e.target);
-        });
-
-        // 在最右側顯示筆記 icon
-        // this.rendition.annotations.mark(cfiRange, { something: false }, e => {
-        // const bounds = e.target.getBoundingClientRect();
-        // const clientX = e.clientX;
-        // if (clientX > bounds.right) {
-        //   console.log("mark clicked", e.target);
-        // }
-        // });
-
-        contents.window.getSelection().removeAllRanges();
+        const selectedContent = contents.window.getSelection();
+        this.locationCfi = cfiRange;
+        this.selectedText = selectedContent.anchorNode.data.substring(selectedContent.baseOffset, selectedContent.extentOffset);
+        if (!this.selected && selectedContent.toString() && selectedContent.toString().length) {
+          this.selected = true;
+        }
       });
 
       this.rendition.themes.default({
@@ -309,13 +303,6 @@ export default {
           'pointer-events': 'auto',
         },
       });
-
-      // Illustration of how to get text from a saved cfiRange
-      const highlights = document.getElementById('highlights');
-
-      // this.rendition.on("selected", function (cfiRange) {
-
-      // });
     },
     /**
      * 設置電子書樣式
@@ -359,20 +346,29 @@ export default {
       // 必需和 highlight.js 中的 classes 相同
       const highlight = this.highlights.find((item) => item.name === name);
       const highlightName = `hl-${name}`;
-      const { id: noteId } = QiuPen.highlighter.highlightSelection(highlightName)[0];
+      const highlightSelections = QiuPen.highlighter.highlightSelection(highlightName);
+      if (!highlightSelections.length) {
+        alert('未選取文字範圍');
+        return;
+      }
+      const { id: noteId } = highlightSelections[0];
       QiuPen.save(this.book, this.bookId, this.selectedText, this.locationCfi, highlight.color, noteId);
       this.loadNote();
-      this.$refs.notePoptip.style.display = 'none';
+      // this.selected = false;
     },
     /**
      * 刪除筆記標記事件
      */
     deleteMarkHandler() {
-      const unhighlightSelection = QiuPen.highlighter.unhighlightSelection()[0];
-      const { id: noteId } = unhighlightSelection;
-      QiuPen.deleteNote({ bookKey: bookId, noteId, book: this.book });
+      const unHighlightSelections = QiuPen.highlighter.unhighlightSelection();
+      if (!unHighlightSelections.length) {
+        alert('未為合法的刪除範圍');
+        return;
+      }
+      const { id: noteId } = unHighlightSelections[0];
+      QiuPen.deleteNote({ bookKey: this.bookId, noteId, book: this.book });
       this.loadNote();
-      this.$refs.notePoptip.style.display = 'none';
+      this.selected = false;
     },
   },
 };
@@ -442,7 +438,8 @@ export default {
 }
 .select-menu {
   position: absolute;
-  display: none;
+  top: 0;
+  left: 0;
   width: 240px;
   padding: 10px 0;
   background-color: #fff;
