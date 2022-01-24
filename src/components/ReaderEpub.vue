@@ -179,7 +179,7 @@ export default {
 
       this.initBookEvent();
 
-      // this.setBookStyle();
+      this.initBookStyle();
     },
     /**
      * 初始化電子書的事件
@@ -290,34 +290,36 @@ export default {
           this.selected = true;
         }
       });
+    },
+    /**
+     * 設置電子書樣式
+     */
+    initBookStyle() {
+      // this.rendition.themes.register('tan', '../../public/epub.css');
+      // this.rendition.themes.select('tan');
+
+      // this.rendition.themes.register('/epub.css');
+      // this.rendition.themes.registerUrl('http://localhost:8080/epub.css');
 
       this.rendition.themes.default({
         '::selection': {
           background: 'rgba(255,255,0, 0.3)',
         },
-        '.epubjs-hl': {
-          fill: 'yellow',
-          'fill-opacity': '0.3',
-          'mix-blend-mode': 'multiply',
-          cursor: 'pointer',
-          'pointer-events': 'auto',
-        },
+        // html: {
+        //   'padding-top': '40px',
+        //   'padding-bottom': '40px',
+        //   'padding-left': '16px',
+        //   'padding-right': '16px',
+        //   'background-color': '#2d353a',
+        // },
+        // body: {
+        //   'padding-top': '40px',
+        //   'padding-bottom': '40px',
+        //   'padding-left': '16px !important',
+        //   'padding-right': '16px !important',
+        //   'background-color': 'white',
+        // },
       });
-    },
-    /**
-     * 設置電子書樣式
-     */
-    setBookStyle() {
-      if (!this.book) {
-        return;
-      }
-      this.book.setStyle('font-size', options.fontSize + 'px');
-      this.book.setStyle('background-color', options.bgColor);
-      this.book.setStyle('font-family', options.fontFamily);
-      this.book.setStyle('line-height', 3);
-      this.book.renderer.forceSingle(false);
-      this.book.setStyle('color', themes[options.theme].color);
-      this.book.setStyle('background-color', themes[options.theme].bgColor);
     },
     /**
      * 載入筆記
