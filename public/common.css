@@ -1,4 +1,4 @@
-/* ::selection {
+::selection {
   background: #333;
   color: #fff;
 }
@@ -6,7 +6,12 @@
 ::-moz-selection {
   background: #333;
   color: #fff;
-} */
+}
+
+body {
+  background-color: #FAFAFA;
+  
+}
 
 /* annotation highlight */
 

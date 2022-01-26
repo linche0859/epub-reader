@@ -1,20 +1,30 @@
 <template>
-  <div>
-    <div id="viewer" class="scrolled" style="height: 100vh" />
-    <button id="prev" class="arrow prev" @click="clickPreviousPageHandler">‹</button>
-    <button id="next" class="arrow next" @click="clickNextPageHandler">›</button>
-    <div v-show="selected" id="select-menu" ref="notePoptip" class="select-menu">
-      <ul class="highlight-list">
-        <li
-          v-for="item in highlights"
-          :key="item.name"
-          class="item ann-color"
-          :style="{ backgroundColor: item.color }"
-          @click="clickMarkHandler(item.name)"
-        />
-      </ul>
-      <hr />
-      <button id="remove-heightlight" class="menu-item" @click="deleteMarkHandler">删除标记</button>
+  <div class="reader-epub">
+    <div class="container">
+      <div id="viewer" class="scrolled" />
+      <div class="arrow prev">
+        <button id="prev" @click="clickPreviousPageHandler">
+          <span>‹</span>
+        </button>
+      </div>
+      <div class="arrow next">
+        <button id="next" @click="clickNextPageHandler">
+          <span>›</span>
+        </button>
+      </div>
+      <div v-show="selected" id="select-menu" ref="notePoptip" class="select-menu">
+        <ul class="highlight-list">
+          <li
+            v-for="item in highlights"
+            :key="item.name"
+            class="item ann-color"
+            :style="{ backgroundColor: item.color }"
+            @click="clickMarkHandler(item.name)"
+          />
+        </ul>
+        <hr />
+        <button id="remove-heightlight" class="menu-item" @click="deleteMarkHandler">删除标记</button>
+      </div>
     </div>
   </div>
 </template>
@@ -162,12 +172,12 @@ export default {
       //   "https://s3.amazonaws.com/epubjs/books/moby-dick/OPS/package.opf"
       // );
 
-      this.rendition = this.book.renderTo('viewer', { height: '100%' });
-      this.rendition.display();
+      this.rendition = this.book.renderTo('viewer', { width: '100%', height: window.innerHeight - 80 });
+      // this.rendition.display();
 
       // 前往某一個章節
       // this.rendition.display("epubcfi(/6/8[Ch2.xhtml]!/4/2/2/1:0)");
-      // this.rendition.display("epubcfi(/6/8!/4/110/1:193)");
+      this.rendition.display('epubcfi(/6/4!/4/6,/1:80,/2/1:2)');
 
       this.book.ready.then(() => {
         // console.log('book.ready');
@@ -299,24 +309,17 @@ export default {
       // this.rendition.themes.select('tan');
 
       // this.rendition.themes.register('/epub.css');
-      // this.rendition.themes.registerUrl('http://localhost:8080/epub.css');
+      // this.rendition.themes.registerUrl('http://localho\st:8080/epub.css');
 
       this.rendition.themes.default({
-        '::selection': {
-          background: 'rgba(255,255,0, 0.3)',
-        },
-        // html: {
-        //   'padding-top': '40px',
-        //   'padding-bottom': '40px',
-        //   'padding-left': '16px',
-        //   'padding-right': '16px',
-        //   'background-color': '#2d353a',
+        // '::selection': {
+        //   background: 'rgba(255,255,0, 0.3)',
         // },
         // body: {
-        //   'padding-top': '40px',
-        //   'padding-bottom': '40px',
-        //   'padding-left': '16px !important',
-        //   'padding-right': '16px !important',
+        //   'padding-top': '0 !important',
+        //   'padding-bottom': '0 !important',
+        //   'padding-left': '0 !important',
+        //   'padding-right': '0 !important',
         //   'background-color': 'white',
         // },
       });
@@ -376,61 +379,47 @@ export default {
 };
 </script>
 
-<style type="text/css">
-::selection {
-  background: yellow;
-}
-
-#extras {
-  width: 600px;
-  margin: 40px auto;
-}
-
-#highlights {
-  list-style: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-#highlights li {
-  list-style: none;
-  margin-bottom: 20px;
-  border-top: 1px solid #e2e2e2;
-  padding: 10px;
-}
-
-#highlights a {
-  display: block;
-}
-
-#viewer.spreads {
-  top: 0;
-  margin-top: 50px;
-}
-
-[ref='epubjs-mk'] {
-  background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPScxLjEnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZycgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnIHg9JzBweCcgeT0nMHB4JyB2aWV3Qm94PScwIDAgNzUgNzUnPjxnIGZpbGw9JyNCREJEQkQnIGlkPSdidWJibGUnPjxwYXRoIGNsYXNzPSdzdDAnIGQ9J00zNy41LDkuNEMxOS42LDkuNCw1LDIwLjUsNSwzNC4zYzAsNS45LDIuNywxMS4zLDcuMSwxNS42TDkuNiw2NS42bDE5LTcuM2MyLjgsMC42LDUuOCwwLjksOC45LDAuOSBDNTUuNSw1OS4yLDcwLDQ4LjEsNzAsMzQuM0M3MCwyMC41LDU1LjQsOS40LDM3LjUsOS40eicvPjwvZz48L3N2Zz4=')
-    no-repeat;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  margin-left: 0;
-}
-
-[ref='epubjs-hl'] {
-  cursor: pointer;
-}
-</style>
-
 <style scoped>
+.reader-epub {
+  padding: 40px 8px;
+  background-color: #2d353a;
+}
+.container {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1180px;
+}
+#viewer {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 900px;
+  border-radius: 10px;
+  overflow: hidden;
+}
 .arrow {
-  position: fixed;
+  position: absolute;
   top: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
+  max-width: 100px;
+  width: 8.47%;
   transform: translateY(-50%);
+}
+.arrow button {
+  display: block;
+  width: 100%;
+  padding-top: 100%;
+  font-size: 37.49px;
+  background-color: #424c54;
+  color: #bccad4;
+  border-width: 0;
+  border-radius: 50%;
   cursor: pointer;
+}
+.arrow span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .prev {
   left: 0;
@@ -465,5 +454,14 @@ export default {
 }
 .ann-color:hover {
   transform: scale(1.2, 1.2);
+}
+
+@media (min-width: 1680px) {
+  .container {
+    max-width: 1650px;
+  }
+  #viewer {
+    max-width: 1370px !important;
+  }
 }
 </style>
