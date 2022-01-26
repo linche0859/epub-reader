@@ -381,7 +381,6 @@ export default {
 
 <style scoped>
 .reader-epub {
-  padding: 40px 8px;
   background-color: #2d353a;
   min-height: 100vh;
 }
@@ -389,38 +388,31 @@ export default {
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  padding: 40px 8px;
   max-width: 1180px;
 }
 #viewer {
   margin-left: auto;
   margin-right: auto;
-  max-width: 900px;
   border-radius: 10px;
   overflow: hidden;
 }
 .arrow {
-  position: absolute;
-  top: 50%;
-  max-width: 100px;
-  width: 8.47%;
-  transform: translateY(-50%);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 40px;
 }
 .arrow button {
   display: block;
   width: 100%;
-  padding-top: 100%;
-  font-size: 37.49px;
-  background-color: #424c54;
-  color: #bccad4;
+  height: 100%;
+  background-color: transparent;
   border-width: 0;
-  border-radius: 50%;
   cursor: pointer;
 }
 .arrow span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: none;
 }
 .prev {
   left: 0;
@@ -457,12 +449,43 @@ export default {
   transform: scale(1.2, 1.2);
 }
 
+@media (min-width: 1024px) {
+  #viewer {
+    max-width: 900px;
+    width: 76.27%;
+  }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    max-width: 100px;
+    width: 8.47%;
+    transform: translateY(-50%);
+  }
+  .arrow button {
+    padding-top: 100%;
+    height: auto;
+    font-size: 37.49px;
+    background-color: #424c54;
+    color: #bccad4;
+    border-radius: 50%;
+  }
+  .arrow span {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 @media (min-width: 1680px) {
   .container {
     max-width: 1650px;
   }
   #viewer {
-    max-width: 1370px !important;
+    max-width: 1370px;
+    width: 83.03%;
   }
 }
 </style>
