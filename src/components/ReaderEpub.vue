@@ -244,7 +244,7 @@ export default {
           link.href = url;
           return link;
         };
-        const link = createLink('/common.css');
+        const link = createLink(process.env.NODE_ENV === 'production' ? './common.css' : '/common.css');
         var iframe = document.getElementsByTagName('iframe')[0];
         iframe.contentDocument.head.appendChild(link);
         QiuPen.create(iframe.contentWindow.document);
