@@ -117,7 +117,7 @@ export const bookContent = `
 <div class="pic" data-cfi="/4/50">
   <img
     alt="p014"
-    src="../Images/p014.jpg"
+    src="./scrum/OEBPS/Images/p014.jpg"
     data-cfi="/4/50/2"
     class="calibre6"
   />
@@ -484,7 +484,7 @@ export const bookContent = `
       data-cfi="/4/210/2/2"
       ><img
         alt="返回"
-        src="../Images/back.png"
+        src="./scrum/OEBPS/Images/back.png"
         data-cfi="/4/210/2/2/2"
         class="calibre9"
     /></a>
@@ -496,7 +496,7 @@ export const bookContent = `
     Report 11-01, October 2010.<a href="#fX-2" data-cfi="/4/210/4/2"
       ><img
         alt="返回"
-        src="../Images/back.png"
+        src="./scrum/OEBPS/Images/back.png"
         data-cfi="/4/210/4/2/2"
         class="calibre9"
     /></a>
@@ -506,7 +506,7 @@ export const bookContent = `
     Ibid.<a href="#fX-3" data-cfi="/4/210/6/2"
       ><img
         alt="返回"
-        src="../Images/back.png"
+        src="./scrum/OEBPS/Images/back.png"
         data-cfi="/4/210/6/2/2"
         class="calibre9"
     /></a>
@@ -517,7 +517,7 @@ export const bookContent = `
     (Cambridge, MA: Productivity, 1988).<a href="#fX-4" data-cfi="/4/210/8/2"
       ><img
         alt="返回"
-        src="../Images/back.png"
+        src="./scrum/OEBPS/Images/back.png"
         data-cfi="/4/210/8/2/2"
         class="calibre9"
     /></a>
@@ -528,7 +528,7 @@ export const bookContent = `
     Paris, France, April 23, 1910.<a href="#fX-5" data-cfi="/4/210/10/2"
       ><img
         alt="返回"
-        src="../Images/back.png"
+        src="./scrum/OEBPS/Images/back.png"
         data-cfi="/4/210/10/2/2"
         class="calibre9"
     /></a>

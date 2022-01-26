@@ -383,6 +383,7 @@ export default {
 .reader-epub {
   padding: 40px 8px;
   background-color: #2d353a;
+  min-height: 100vh;
 }
 .container {
   position: relative;
