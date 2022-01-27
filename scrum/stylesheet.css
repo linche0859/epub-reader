@@ -1,0 +1,197 @@
+.author {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    line-height: 1.6em;
+    text-align: right;
+    text-indent: 0;
+    margin: 3em 0.75em 0 0
+    }
+.calibre {
+    -webkit-font-smoothing: antialiased;
+    display: block;
+    font-family: "readmoo", "huhui", "Hiragino Sans GB", "Heiti TC", "AR PL UMing CN", "PMingLiU", "新細明體", sans-serif;
+    font-size: 1em;
+    line-height: 1.2;
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0 5pt
+    }
+.calibre1 {
+    display: block;
+    font-family: readmoo-header, "Hiragino Mincho Pro", "微軟正黑體", "HiraMinProN-W6";
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 1.2;
+    text-align: center;
+    margin: 1.5em 0 2em
+    }
+.calibre2 {
+    display: block;
+    line-height: 1.6em;
+    text-indent: 2em;
+    margin: 0.75em 0
+    }
+.calibre3 {
+    display: block;
+    font-family: readmoo-header, "Hiragino Mincho Pro", "微軟正黑體", "HiraMinProN-W6";
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 1.2;
+    padding-bottom: 0.25em;
+    border-bottom: #5D564E dashed 1px;
+    margin: 2.25em 0 0.5em
+    }
+.calibre4 {
+    font-style: italic
+    }
+.calibre5 {
+    display: block;
+    line-height: 1.6em;
+    text-indent: 2em;
+    margin: 0.25em 0
+    }
+.calibre6 {
+    height: auto;
+    max-width: 100%;
+    width: auto
+    }
+.calibre7 {
+    display: block
+    }
+.calibre8 {
+    display: list-item;
+    line-height: 1.25em;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em
+    }
+.calibre9 {
+    height: auto;
+    width: auto
+    }
+.calibre10 {
+    -moz-column-break-before: always;
+    -moz-page-break-before: always;
+    -ms-column-break-before: always;
+    -ms-page-break-before: always;
+    -o-column-break-before: always;
+    -o-page-break-before: always;
+    -webkit-column-break-before: always;
+    -webkit-page-break-before: always;
+    display: block;
+    margin: 0
+    }
+.calibre11 {
+    display: block;
+    font-family: "Hiragino Mincho Pro", "Hiragino Sans GB", "Microsoft Jhenghei", "微軟正黑體", "標楷體", "HiraMinProN-W6";
+    font-size: 1.125em;
+    font-weight: bold;
+    line-height: 2em;
+    padding-left: 1em;
+    vertical-align: middle
+    }
+.calibre12 {
+    display: block;
+    font-family: "Hiragino Mincho Pro", "Hiragino Sans GB", "Microsoft Jhenghei", "微軟正黑體", "標楷體", "HiraMinProN-W6";
+    line-height: 1.5em;
+    margin-left: 0;
+    border-top: #999 solid 1px;
+    padding: 0.75em 0.5em 0.5em 0.75em
+    }
+.calibre13 {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    font-size: 1em;
+    line-height: 1.2;
+    text-indent: 0;
+    margin: 0.5em 0 0.75em
+    }
+.calibre14 {
+    font-weight: bold
+    }
+.calibre15 {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    font-size: 1em;
+    line-height: 1.2;
+    text-indent: 0;
+    margin: 0.5em 0 0
+    }
+.calibre16 {
+    display: block;
+    line-height: 1.6em;
+    text-indent: 2em;
+    margin: 0.75em 0 0
+    }
+.footnote {
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    font-size: 0.75em;
+    text-decoration: none;
+    vertical-align: super
+    }
+.footnote1 {
+    display: block;
+    font-size: 0.75em;
+    list-style-type: decimal;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-top: 3em;
+    border-top: #666 solid 1px
+    }
+.kai {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    margin-bottom: 1.5em;
+    margin-top: 1.5em
+    }
+.kai1 {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    list-style-type: decimal;
+    margin-bottom: 1.5em;
+    margin-right: 0;
+    margin-top: 1.5em
+    }
+.kai2 {
+    display: block;
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    list-style-type: disc;
+    margin-bottom: 1.5em;
+    margin-right: 0;
+    margin-top: 1.5em
+    }
+.kai3 {
+    font-family: "標楷體", "BiauKai", "Lucida Grande", Serif;
+    margin-bottom: 1.5em;
+    margin-top: 1.5em
+    }
+.num {
+    display: block;
+    font-family: readmoo, "Hiragino Sans GB", "Microsoft Jhenghei", "微軟正黑體", sans-serif;
+    font-size: 0.7em;
+    line-height: 1.2;
+    text-indent: 0;
+    margin: 0
+    }
+.pic {
+    -moz-column-break-inside: avoid;
+    display: block;
+    text-align: center;
+    width: 100%;
+    　　-webkit-column-break-inside: avoid;
+    margin: 0 auto
+    }
+.right {
+    display: block;
+    line-height: 1.6em;
+    text-align: right;
+    text-indent: 2em;
+    margin: 0.25em 0
+    }
+.sigil_not_in_toc {
+    display: block;
+    font-family: readmoo-header, "Hiragino Mincho Pro", "微軟正黑體", "HiraMinProN-W6";
+    font-size: 1.125em;
+    font-weight: bold;
+    line-height: 1.2;
+    margin: 2em 0 0
+    }
