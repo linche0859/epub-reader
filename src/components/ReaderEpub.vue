@@ -1,7 +1,7 @@
 <template>
   <div class="reader-epub">
     <div class="container">
-      <div id="viewer" class="scrolled" />
+      <div id="viewer" ref="viewer" class="scrolled" />
       <div class="arrow prev">
         <button id="prev" @click="clickPreviousPageHandler">
           <span>‹</span>
@@ -55,8 +55,14 @@ import { bookContent } from '../../book';
 export default {
   data() {
     return {
+      addedContentEventListener: false,
+      isMobile: false,
+      isMouseDown: false,
       selected: false,
+      changedPage: false,
       bookId: 1,
+      mouseDownX: 0,
+      mouseDownY: 0,
       selectedText: '',
       locationCfi: '',
       notes: [],
@@ -128,13 +134,18 @@ export default {
     };
   },
   mounted() {
-    this.init();
+    this.initBook();
+    window.addEventListener('resize', this.resizeWindowHandler);
+    this.resizeWindowHandler();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resizeWindowHandler);
   },
   methods: {
     /**
      * 初始化設定
      */
-    async init() {
+    async initBook() {
       const options = {
         title: "Alice's Adventures in Wonderland", // *Required, title of the book.
         author: 'Lewis Carroll', // *Required, name of the author.
@@ -237,18 +248,25 @@ export default {
 
       // 切換頁時，當到達第一頁時，隱藏上一頁按鈕，到達最後一頁時，隱藏下一頁按鈕
       this.rendition.on('relocated', (location, e) => {
-        const createLink = (url) => {
-          var link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.type = 'text/css';
-          link.href = url;
-          return link;
-        };
-        const link = createLink(process.env.NODE_ENV === 'production' ? '/epub-reader/common.css' : '/common.css');
-        var iframe = document.getElementsByTagName('iframe')[0];
-        iframe.contentDocument.head.appendChild(link);
-        QiuPen.create(iframe.contentWindow.document);
+        const iframe = document.getElementsByTagName('iframe')[0];
+        const iframeDocument = iframe.contentWindow.document;
+        QiuPen.create(iframeDocument);
         QiuPen.load(this.book, this.bookId);
+        // 桌機版以下才有滑動內容且換頁功能
+
+        if (this.isMobile && !this.addedContentEventListener) {
+          this.addedContentEventListener = true;
+          this.registerSlidingContent(iframeDocument);
+        }
+        // 取消監聽手機版的滑動事件
+        if (!this.isMobile && this.addedContentEventListener) {
+          this.addedContentEventListener = false;
+          this.unregisterSlidingContent(iframeDocument);
+        }
+        // 目前只能透過 location.displayed 抓取當前章節的頁碼和總頁數
+        // 無法取得整本書的總頁數
+        // var currentLocation = this.rendition.currentLocation();
+        // var currentPage = this.book.locations.percentageFromCfi(location.start.cfi);
 
         var next = this.book.package.metadata.direction === 'rtl' ? document.getElementById('prev') : document.getElementById('next');
         var prev = this.book.package.metadata.direction === 'rtl' ? document.getElementById('next') : document.getElementById('prev');
@@ -305,24 +323,8 @@ export default {
      * 設置電子書樣式
      */
     initBookStyle() {
-      // this.rendition.themes.register('tan', '../../public/epub.css');
-      // this.rendition.themes.select('tan');
-
-      // this.rendition.themes.register('/epub.css');
-      // this.rendition.themes.registerUrl('http://localho\st:8080/epub.css');
-
-      this.rendition.themes.default({
-        // '::selection': {
-        //   background: 'rgba(255,255,0, 0.3)',
-        // },
-        // body: {
-        //   'padding-top': '0 !important',
-        //   'padding-bottom': '0 !important',
-        //   'padding-left': '0 !important',
-        //   'padding-right': '0 !important',
-        //   'background-color': 'white',
-        // },
-      });
+      this.rendition.themes.register('tan', process.env.NODE_ENV === 'production' ? '/epub-reader/common.css' : '/common.css');
+      this.rendition.themes.select('tan');
     },
     /**
      * 載入筆記
@@ -374,6 +376,74 @@ export default {
       QiuPen.deleteNote({ bookKey: this.bookId, noteId, book: this.book });
       this.loadNote();
       this.selected = false;
+    },
+    /**
+     * 變更視窗大小事件
+     */
+    resizeWindowHandler() {
+      this.isMobile = window.innerWidth < 1024;
+    },
+    /**
+     * 註冊滑動內容事件
+     * @param {object} element 被註冊的元素
+     */
+    registerSlidingContent(element) {
+      element.addEventListener('mousedown', this.mousedownContentHandler);
+      element.addEventListener('mousemove', this.mousemoveContentHandler);
+      element.addEventListener('mouseup', this.mouseupContentHandler);
+      element.addEventListener('touchstart', this.mousedownContentHandler);
+      element.addEventListener('touchmove', this.mousemoveContentHandler);
+      element.addEventListener('touchend', this.mouseupContentHandler);
+    },
+    /**
+     * 取消註冊滑動內容事件
+     * @param {object} element 被取消註冊的元素
+     */
+    unregisterSlidingContent(element) {
+      element.removeEventListener('mousedown', this.mousedownContentHandler);
+      element.removeEventListener('mousemove', this.mousemoveContentHandler);
+      element.removeEventListener('mouseup', this.mouseupContentHandler);
+      element.removeEventListener('touchstart', this.mousedownContentHandler);
+      element.removeEventListener('touchmove', this.mousemoveContentHandler);
+      element.removeEventListener('touchend', this.mouseupContentHandler);
+    },
+    /**
+     * 滑鼠按下內容時的事件
+     * @param {object} e MouseEvent Attribute
+     */
+    mousedownContentHandler(e) {
+      this.isMouseDown = true;
+      this.mouseDownX = e.pageX || e.changedTouches[0].pageX || 0;
+      this.mouseDownY = e.pageY || e.changedTouches[0].pageY || 0;
+    },
+    /**
+     * 滑鼠移動內容時的事件
+     * @param {object} e MouseEvent Attribute
+     */
+    mousemoveContentHandler(e) {
+      if (!(this.selected || this.changedPage) && this.isMouseDown) {
+        // 滑動的距離達到畫面的三分之一時，觸發換頁
+        // const reachDistance = Math.abs(e.pageX - this.mouseDownX) /3 >= (this.$refs.viewer.clientWidth / 3)
+        // if (reachDistance) {
+        const pageX = e.pageX || e.changedTouches[0].pageX || 0;
+        const pageY = e.pageY || e.changedTouches[0].pageY || 0;
+        if (pageX > this.mouseDownX || pageY > this.mouseDownY) {
+          this.clickPreviousPageHandler();
+        } else if (pageX < this.mouseDownX || pageY < this.mouseDownY) {
+          this.clickNextPageHandler();
+        }
+        // }
+        this.changedPage = true;
+      }
+      // console.log('this.mouseDownX', this.mouseDownX);
+      // console.log('this.mouseDownY', this.mouseDownY);
+    },
+    /**
+     * 滑鼠離開內容時的事件
+     */
+    mouseupContentHandler() {
+      this.isMouseDown = false;
+      this.changedPage = false;
     },
   },
 };
